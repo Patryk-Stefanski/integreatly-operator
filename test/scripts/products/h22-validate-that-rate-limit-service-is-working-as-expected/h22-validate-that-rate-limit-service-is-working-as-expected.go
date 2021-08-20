@@ -564,6 +564,27 @@ func (r *redisCounter) Flush() error {
 	return err
 }
 
+func (r *redisCounter) Flush() error {
+	_, err := testcommon.ExecToPodArgs(r.client, r.config,
+		[]string{
+			"/opt/rh/rh-redis32/root/usr/bin/redis-cli",
+			"-c",
+			"-h",
+			r.RedisHost,
+			"-p",
+			"6379",
+			"FLUSHALL",
+		},
+		r.PodName,
+		r.Namespace,
+		"redis",
+	)
+	return err
+}
+
+
+
+
 func newThreescaleClient(installation *integreatlyv1alpha1.RHMI, accessToken string) threescale.ThreeScaleInterface {
 	httpc := &http.Client{
 		Timeout: time.Second * 10,
